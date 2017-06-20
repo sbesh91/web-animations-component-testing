@@ -1,0 +1,63 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="cascade-element">
+  <template>
+    <style>
+       :host {
+        display: none
+      }
+    </style>
+
+
+
+  </template>
+
+  <script>
+    class CascadeAnimation extends Polymer.Element {
+
+      static get is() { return 'cascade-animation'; }
+
+      static get properties() {
+        return {
+          config: {
+            type: Object,
+            value: {
+              name: null,
+              frames: null,
+              nodes: null,
+              nodeDelay: null,
+              timing: null
+            }
+          }
+        };
+      }
+
+      fire() {
+        this._animations = [];
+        let config = this.config;
+
+        let nodes = config.nodes;
+        let effects = [];
+        let nodeDelay = config.nodeDelay || 50;
+
+        config.timing = config.timing || {};
+        config.timing.delay = config.timing.delay || 0;
+
+        for (let node, index = 0; node = nodes[index]; index++) {
+          config.timing.delay += nodeDelay;
+          config.node = node;
+          
+          effects.push(new KeyframeEffect(node,config.frames,config.timing));
+        }
+        
+        let _effect = new GroupEffect(effects);
+        
+        let anim = new Animation(_effect, document.timeline);
+
+        anim.play();
+      }
+    }
+
+    window.customElements.define(CascadeAnimation.is, CascadeAnimation);
+  </script>
+</dom-module>

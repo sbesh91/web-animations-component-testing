@@ -1,0 +1,109 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="list-page.html">
+<link rel="import" href="detail-page.html">
+<link rel="import" href="hero-transition.html">
+<link rel="import" href="cascade-animation.html">
+<script src="../../node_modules/web-animations-js/web-animations-next.min.js"></script>
+
+<dom-module id="animation-testing-app">
+  <template>
+    <style>
+       :host {
+        display: block;
+      }
+      
+      button {
+        margin-top: 200px;
+      }
+    </style>
+    
+    <template is="dom-repeat" items="{{list}}">
+      <list-element id="item{{item}}" on-click="fire"></list-element>
+    </template>
+
+    <detail-element id="detail"></detail-element>
+    <hero-transition id="hero" shared="{{shared}}"></hero-transition>
+    <cascade-animation id="cascade" config="{{config}}"></cascade-animation>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class AnimationTestingApp extends Polymer.Element {
+      static get is() { return 'animation-testing-app'; }
+      static get properties() {
+        return {
+          shared: {
+            type: Object,
+            value: null
+          },
+          config: {
+            type: Object,
+            value: null
+          },
+          flip: {
+            type: Boolean,
+            value: true
+          },
+          list:{
+            type: Array,
+            value: [1,2,3,4,5,6,7,8,9,0]
+          },
+          currentTarget:{
+            type: Object,
+            value: null
+          }
+        };
+      }
+
+      fire(event) {
+        this.currentTarget = event.target;
+        this.shared = {
+          name: 'transform-shape',
+          fromPage: this.currentTarget,
+          toPage: this.$.detail,
+          id: 'header',
+          timing: {
+            easing: "cubic-bezier(0.4, 0.0, 0.2, 1)",
+            duration: 800
+          }
+        };
+        this.flip = !this.flip;
+        this.$.hero.fire();
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready(){
+        super.ready();
+
+        Polymer.RenderStatus.afterNextRender(this, function() {
+          let nodes = this.root.querySelectorAll("list-element");
+
+          this.config = {
+            name: "fade-and-slide-from-top",
+            frames:[
+              {'transform': 'translate(0,-100%)', 'opacity': '0'},
+              {'transform': 'translate(0,0)', 'opacity': '1'}
+            ],
+            nodes: nodes,
+            nodeDelay: 30,
+            timing:{
+              easing: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
+              duration: 400,
+              fill: 'forwards'              
+            }
+          };
+                    
+          this.$.cascade.fire();
+        });
+      }
+    }
+
+    window.customElements.define(AnimationTestingApp.is, AnimationTestingApp);
+  </script>
+</dom-module>

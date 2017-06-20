@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="list-element">
+	<template>
+		<style>
+			:host {
+				display: inline-block;
+				height: 50px;
+				width: 50px;
+				background: blue;
+				margin: 10px;				
+				box-sizing: border-box;
+
+				transform:translate(0,-100%);
+				opacity: 0;
+			}
+		</style>
+
+		<div id="header"></div>
+	</template>
+
+	<script>
+		class ListElement extends Polymer.Element {
+
+			static get is() { return 'list-element'; }
+
+			static get properties() {
+				return {
+
+				};
+			}
+
+		}
+
+		window.customElements.define(ListElement.is, ListElement);
+	</script>
+</dom-module>

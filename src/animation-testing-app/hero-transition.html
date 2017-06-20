@@ -1,0 +1,72 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="hero-transition">
+  <template>
+    <style>
+      :host {
+        display: none;
+      }
+    </style>    
+  </template>
+
+  <script>
+    /**
+     * `hero-transition`
+     * Web animations api powered page change transition
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class HeroTransition extends Polymer.Element {
+      static get is() { return 'hero-transition'; }
+      static get properties() {
+        return {
+          shared: {
+            type: Object,
+            value: {
+              name: null,
+              fromPage: null,
+              from: null,
+              toPage: null,
+              to: null,
+              id: null,
+              timing: null
+            }
+          }
+        };
+      }
+
+      fire(){      
+        if (!this.shared) {
+          return;
+        }
+        
+        let shared = this.shared;
+
+        let fromRect = shared.fromPage.getBoundingClientRect();
+        let toRect = shared.toPage.getBoundingClientRect();
+        let deltaLeft = fromRect.left - toRect.left;
+        let deltaTop = fromRect.top - toRect.top;
+        let deltaWidth = fromRect.width / toRect.width;
+        let deltaHeight = fromRect.height / toRect.height;
+
+        let effect = new KeyframeEffect(shared.toPage, [
+          {'transform': 'translate(' + deltaLeft + 'px,' + deltaTop + 'px) scale(' + deltaWidth + ',' + deltaHeight + ')'},
+          {'transform': 'none'}
+        ], shared.timing);
+
+        let anim = new Animation(effect, document.timeline);
+
+        shared.toPage.style['transformOrigin'] = '0 0';
+        shared.toPage.style.zIndex = 10000;
+        shared.toPage.style.visibility = 'visible';
+        shared.fromPage.style.visibility = 'hidden';
+
+        anim.play();
+      }
+    }
+
+    window.customElements.define(HeroTransition.is, HeroTransition);
+  </script>
+</dom-module>

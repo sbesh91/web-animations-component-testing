@@ -1,0 +1,6 @@
+{
+  "name": "animation-testing",
+  "short_name": "animation-testing",
+  "start_url": "/",
+  "display": "standalone"
+}
